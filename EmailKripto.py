@@ -18,8 +18,10 @@ def send():
         try:
             Email.Emailsender(to,'Enkripsi',msg)
             return render_template("result.html", emaile = to )
-        except:
-            return render_template("index.html")
+        except Exception as e:
+            return render_template("index.html", error = e)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

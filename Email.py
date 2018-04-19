@@ -3,6 +3,7 @@ import smtplib
 def Emailsender(to, subject, msg):
     try:
         #fp = open('msg.txt', 'rb')
+        #blm digunakan
         mail = smtplib.SMTP('smtp.gmail.com', 587)
         mail.ehlo()
         mail.starttls()
