@@ -13,11 +13,7 @@ class Fierkes:
         self.fn.shiftBoxDown(self.fn.sbox1)
         self.fn.rowTransposition()
         self.fn.columnTransposition()
-        for i in range(len(self.fn.right)):
-            print(ord(self.fn.right[i]))
         self.fn.right = self.fn.xOREncryptLeft(tmpleft)
-        for i in range(len(self.fn.right)):
-            print(ord(self.fn.right[i]))
         return self.fn.left + self.fn.right
 
     def Decrypt(self):
