@@ -1,5 +1,6 @@
 from random import SystemRandom
 from hashlib import sha256 #ganti dengan keccak
+import math
 
 
 def divisors(n):
@@ -22,7 +23,7 @@ def euclid(a, b):
 def invmod(a, n):
     g,x,y = euclid(a, n)
     if g != 1:
-        print('multiplicative inverse does not exist')
+        raise ValueError('multiplicative inverse does not exist')
     else:
         return x%n
 
@@ -32,16 +33,16 @@ class Point(object):
         self.x,self.y = x,y
         self.infstat = False
 
-    def infinity_point(cls):
-        P = cls(0,0)
+    def infinity_point(self):
+        P = Point(0, 0)
         P.infstat = True
         return P
 
-    def __str__(self):
+    def __repr__(self):
         if self.infstat:
             return 'O'
         else:
-            return '(' + str(self.x) + ',' + str(self.y) + ')'
+            return '(' + repr(self.x) + ',' + repr(self.y) + ')'
 
     def __eq__(self,other):
         if self.infstat:
@@ -102,14 +103,18 @@ class Curve(object):
             orderP += 1
         return orderP
 
+    def get_y(self, x):
+        return math.sqrt(x*x*x + self.a*x*x + self.b*x + self.c)
+
     def double(self, P):
         return self.add(P,P)
 
     def multiply(self, P, k):
+        p = Point(0,0)
         if P.is_infinite():
             return P
         elif k == 0:
-            return Point.infinity_point()
+            return p.infinity_point()
         elif k < 0:
             return self.multiply(self.invert(P), -k)
         else:
@@ -117,8 +122,9 @@ class Curve(object):
             return self.repeat_additions(P, b, 1)
 
     def repeat_additions(self, P, b, n):
+        p = Point(0, 0)
         if b == '0':
-            return Point.infinity_point()
+            return p.infinity_point()
         elif b == '1':
             return P
         elif b[-1] == '0':
@@ -127,14 +133,15 @@ class Curve(object):
             return self.add(P, self.repeat_additions(self.double(P), b[:-1], n+1))
 
     def show_points(self):
-        return [str(P) for P in self.get_points()]
+        return [repr(P) for P in self.get_points()]
 
     #List all multiples of a point on the curve.
     def generate(self, P):
+        p = Point(0, 0)
         Q = P
-        orbit = [str(Point.infinity_point())]
+        orbit = [repr(p.infinity_point())]
         while not Q.is_infinite():
-            orbit.append(str(Q))
+            orbit.append(repr(Q))
             Q = self.add(P,Q)
         return orbit
 
@@ -150,7 +157,8 @@ class CurveModP(Curve):
             return (P.y*P.y) % self.char == (P.x*P.x*P.x + self.a*P.x*P.x + self.b*P.x + self.c) % self.char
 
     def get_points(self):
-        points = [Point.infinity_point()]
+        p = Point(0, 0)
+        points = [p.infinity_point()]
         for x in range(self.char):
                 for y in range(self.char):
                     P = Point(x,y)
@@ -167,15 +175,16 @@ class CurveModP(Curve):
     def add(self, p1, p2):
         yd = (p2.y - p1.y) % self.char
         xd = (p2.x - p1.x) % self.char
+        p = Point(0,0)
         if p1.is_infinite():
             return p2
         elif p2.is_infinite():
             return p1
         elif xd == 0 and yd != 0:
-            return Point.infinity_point()
+            return p.infinity_point()
         elif xd == 0 and yd == 0:
             if p1.y == 0:
-                return Point.infinity_point()
+                return p.infinity_point()
             else:
                 ld = ((3 * p1.x * p1.x + 2 * self.a * p1.x + self.b) * invmod(2 * p1.y, self.char)) % self.char
         else:
@@ -221,7 +230,7 @@ def sign(message, curve, P, n, keypair):
         R = curve.multiply(P, k)
         r = R.x % n
         s = (invmod(k, n) * (z + r * d)) % n
-    print('ECDSA sig: (Q, r, s) = (' + str(Q) + ', ' + str(r) + ', ' + str(s) + ')')
+    print('ECDSA sig: (Q, r, s) = (' + repr(Q) + ', ' + repr(r) + ', ' + repr(s) + ')')
     return (Q,r,s)
 
 #Verify the string message is authentic, given an ECDSA signature generated using a curve with
@@ -245,3 +254,14 @@ def verify(message, curve, P, n, signature):
     C_1, C_2 = curve.multiply(P, u_1), curve.multiply(Q, u_2)
     C = curve.add(C_1, C_2)
     return r % n == C.x % n
+
+c = CurveModP(1,0,3,7)
+print(c.show_points())
+p = Point(3,5)
+print(str(p))
+k = generate_keypair(c,p,c.nth_order(p))
+str = "apa sih ini"
+str = str.encode('utf-8')
+s = sign(str,c,p,c.nth_order(p),k)
+
+print(verify(str,c,p,c.nth_order(p),s))
