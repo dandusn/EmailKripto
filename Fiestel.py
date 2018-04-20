@@ -49,27 +49,39 @@ class Fiestel:
 
     def shiftBoxRight(self, sb):
         temp = sb[len(sb) - 1][len(sb[0]) - 1]
-        for i in range(len(sb)*len(sb[0])-2,0,-1):
+        for i in range(len(sb)*len(sb[0])-2,-1,-1):
             sb[int((i+1)/16)][(i+1)%16] = sb[int(i/16)][i%16]
         sb[0][0] = temp
+        for i in range(len(sb)):
+            print(sb[i])
+        print(" ")
 
     def shiftBoxLeft(self, sb):
         temp = sb[0][0]
         for i in range(0,len(sb)*len(sb[0])-1,1):
             sb[int(i/16)][i%16] = sb[int((i+1)/16)][(i+1)%16]
         sb[len(sb) - 1][len(sb[0]) - 1] = temp
+        for i in range(len(sb)):
+            print(sb[i])
+        print(" ")
 
     def shiftBoxDown(self, sb):
         temp = sb[len(sb) - 1][len(sb[0]) - 1]
-        for i in range(len(sb) * len(sb[0]) - 2, 0, -1):
+        for i in range(len(sb) * len(sb[0]) - 2, -1, -1):
             sb[(i + 1) % 16][int((i + 1) / 16)] = sb[i % 16][int(i / 16)]
         sb[0][0] = temp
+        for i in range(len(sb)):
+            print(sb[i])
+        print(" ")
 
     def shiftBoxUp(self, sb):
         temp = sb[0][0]
         for i in range(0, len(sb) * len(sb[0]) - 1, 1):
             sb[i % 16][int(i / 16)] = sb[(i + 1) % 16][int((i + 1) / 16)]
         sb[len(sb) - 1][len(sb[0]) - 1] = temp
+        for i in range(len(sb)):
+            print(sb[i])
+        print(" ")
 
     def xOREncryptKey(self):
         key = ''
