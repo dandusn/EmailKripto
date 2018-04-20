@@ -215,6 +215,9 @@ def generate_keypair(curve, P, n):
     Q = curve.multiply(P, d)
     print("Private key: d = " + str(d))
     print("Public key: Q = " + str(Q))
+
+    writefile("eccpublic", repr(Q))
+    writefile("eccprivate", d)
     return (d, Q)
 
 #Create a digital signature for the string message using a given curve with a distinguished
@@ -232,6 +235,16 @@ def sign(message, curve, P, n, keypair):
         s = (invmod(k, n) * (z + r * d)) % n
     print('ECDSA sig: (Q, r, s) = (' + repr(Q) + ', ' + repr(r) + ', ' + repr(s) + ')')
     return (Q,r,s)
+
+def calculate_r_and_s(message, curve, P, n, d):
+    z = hash_and_truncate(message, n)
+    r, s = 0, 0
+    while r == 0 or s == 0:
+        k = 4
+        R = curve.multiply(P, k)
+        r = R.x % n
+        s = (invmod(k, n) * (z + r * d)) % n
+    return (r, s)
 
 #Verify the string message is authentic, given an ECDSA signature generated using a curve with
 #a distinguished point P that generates a prime order subgroup of size n.
@@ -255,8 +268,42 @@ def verify(message, curve, P, n, signature):
     C = curve.add(C_1, C_2)
     return r % n == C.x % n
 
+def writefile(fl, w):
+    f = open(fl, "w")
+    f.write(str(w))
+    f.close()
+
+def readfile(fl):
+    with open (fl, "r") as myfile:
+        x = myfile.read()
+    return x
+
+def parse_publickey(p):
+    tx = p[p.find("(") + 1:p.find(")")]
+    tx1 = tx.split(",")
+    x,y = 0,0
+    try:
+        x = int(tx1[0])
+    except ValueError:
+        x = int(float(tx1[0]))
+
+    try:
+        y = int(tx1[1])
+    except ValueError:
+        y = int(float(tx1[1]))
+    Q = Point(x,y)
+    return Q
+
+def parse_privatekey(p):
+    try:
+        return int(p)
+    except ValueError:
+        return int(float(p))
+
 c = CurveModP(1,0,3,7)
 print(c.show_points())
+
+#pilih point yang ada di show_points
 p = Point(3,5)
 print(str(p))
 k = generate_keypair(c,p,c.nth_order(p))
@@ -264,4 +311,15 @@ str = "apa sih ini"
 str = str.encode('utf-8')
 s = sign(str,c,p,c.nth_order(p),k)
 
-print(verify(str,c,p,c.nth_order(p),s))
+#cek signature
+pri = readfile("eccprivate")
+pub = readfile("eccpublic")
+
+d = parse_privatekey(pri)
+Q = parse_publickey(pub)
+
+w = calculate_r_and_s(str,c,p,c.nth_order(p),d)
+
+signat = (Q,w[0],w[1])
+
+print(verify(str,c,p,c.nth_order(p),signat))
