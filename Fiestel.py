@@ -1,12 +1,9 @@
 class Fiestel:
-    left = []
-    right = []
-    rowtrp = [3, 1, 0, 2]
-    coltrp = [2, 0, 3, 1]
-    sboxkey = [[]]
-    sbox1 = [[]]
-
     def __init__(self, isdekrip):
+        self.left = []
+        self.right = []
+        self.rowtrp = [3, 1, 0, 2]
+        self.coltrp = [2, 0, 3, 1]
         self.sboxkey = [[183, 59, 68, 98, 83, 6, 214, 23, 10, 157, 174, 173, 202, 166, 70, 85],
                    [7, 137, 163, 69, 221, 63, 177, 210, 132, 178, 244, 18, 242, 237, 100, 228],
                    [95, 80, 58, 43, 161, 99, 187, 64, 61, 110, 117, 33, 22, 1, 19, 66],
@@ -52,64 +49,47 @@ class Fiestel:
         for i in range(len(sb)*len(sb[0])-2,-1,-1):
             sb[int((i+1)/16)][(i+1)%16] = sb[int(i/16)][i%16]
         sb[0][0] = temp
-        for i in range(len(sb)):
-            print(sb[i])
-        print(" ")
 
     def shiftBoxLeft(self, sb):
         temp = sb[0][0]
         for i in range(0,len(sb)*len(sb[0])-1,1):
             sb[int(i/16)][i%16] = sb[int((i+1)/16)][(i+1)%16]
         sb[len(sb) - 1][len(sb[0]) - 1] = temp
-        for i in range(len(sb)):
-            print(sb[i])
-        print(" ")
 
     def shiftBoxDown(self, sb):
         temp = sb[len(sb) - 1][len(sb[0]) - 1]
         for i in range(len(sb) * len(sb[0]) - 2, -1, -1):
             sb[(i + 1) % 16][int((i + 1) / 16)] = sb[i % 16][int(i / 16)]
         sb[0][0] = temp
-        for i in range(len(sb)):
-            print(sb[i])
-        print(" ")
 
     def shiftBoxUp(self, sb):
         temp = sb[0][0]
         for i in range(0, len(sb) * len(sb[0]) - 1, 1):
             sb[i % 16][int(i / 16)] = sb[(i + 1) % 16][int((i + 1) / 16)]
         sb[len(sb) - 1][len(sb[0]) - 1] = temp
-        for i in range(len(sb)):
-            print(sb[i])
-        print(" ")
 
-    def xOREncryptKey(self):
-        key = ''
-        for i in range(8):
-            key += (chr(self.sboxkey[0][i]))
-        right1 = xor(self.right, key)
-        self.right = right1
-
-    def xOREncryptLeft(self, tmp):
-        right1 = xor(self.right,tmp)
-        return right1
 
     def substitutionEncrypt(self):
-        right1 =''
-        for i in range(len(self.right)):
-            x = int(ord(self.right[i])/16)
-            y = int(ord(self.right[i]))%16
+        right1 = ""
+        i = 0
+        while i < len(self.right):
+            x = int(ord(self.right[i])/ 16)
+            y = ord(self.right[i]) % 16
             right1 += chr(self.sbox1[x][y])
+            i += 1
         self.right = right1
 
     def rowTransposition(self):
         right1 = ''
-        for i in range(0,len(self.right),16):
-            if len(self.right)-i >= 16:
-                for j in range(len(self.rowtrp)):
+        i = 0
+        while i < len(self.right):
+            if len(self.right) - i >= 16:
+                j = 0
+                while j < len(self.rowtrp):
                     right1 += self.right[i+4*self.rowtrp[j]:i+4*(self.rowtrp[j]+1)]
-            else:
-                right1 += self.right[i:]
+                    j = j + 1
+            else: right1 += self.right[i:]
+            i = i + 16
         self.right = right1
 
     def columnTransposition(self):
@@ -131,6 +111,22 @@ class Fiestel:
             self.left = s[:int(len(s)/2+1)]
             self.right = s[int(len(s)/2+1):]
 
+    def xOREncryptKey(self):
+        key = self.sboxkey[0]
+        right1 = ""
+        i = 0
+        while i < len(self.right):
+            right1 += chr(ord(self.right[i]) ^ key[i % 8])
+            i += 1
+        self.right = right1
+
+    def xOREncryptLeft(self, tmp):
+        right1 = ""
+        i = 0
+        while i < len(self.right):
+            right1 += chr(ord(self.right[i]) ^ ord(tmp[i%len(tmp)]))
+            i += 1
+        return right1
 
 def xor(a,b):
     xored = ''
@@ -138,3 +134,4 @@ def xor(a,b):
         xored_value = ord(a[i]) ^ ord(b[i%len(b)])
         xored += chr(xored_value)
     return xored
+

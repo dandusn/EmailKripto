@@ -1,8 +1,9 @@
 from Fiestel import Fiestel
 
 class Fierkes:
-    fn = Fiestel(False)
-    fnd = Fiestel(True)
+    def __init__(self):
+        self.fn = Fiestel(False)
+        self.fnd = Fiestel(True)
 
     def Encrypt(self):
         tmpleft = self.fn.left

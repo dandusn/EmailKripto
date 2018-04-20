@@ -60,7 +60,6 @@ class Curve(object):
     def __init__(self, a, b, c, char):
         self.a, self.b, self.c = a, b, c
         self.char = char
-        print(self)
 
     def __str__(self):
         if self.a == 0:
@@ -213,9 +212,6 @@ def generate_keypair(curve, P, n):
     r = SystemRandom()
     d = r.randrange(1, n)
     Q = curve.multiply(P, d)
-    print("Private key: d = " + str(d))
-    print("Public key: Q = " + str(Q))
-
     writefile("eccpublic", repr(Q))
     writefile("eccprivate", d)
     return (d, Q)
@@ -233,7 +229,6 @@ def sign(message, curve, P, n, keypair):
         R = curve.multiply(P, k)
         r = R.x % n
         s = (invmod(k, n) * (z + r * d)) % n
-    print('ECDSA sig: (Q, r, s) = (' + repr(Q) + ', ' + repr(r) + ', ' + repr(s) + ')')
     return (Q,r,s)
 
 def calculate_r_and_s(message, curve, P, n, d):
@@ -300,6 +295,8 @@ def parse_privatekey(p):
     except ValueError:
         return int(float(p))
 
+"""
+
 c = CurveModP(1,0,3,7)
 print(c.show_points())
 
@@ -310,6 +307,10 @@ k = generate_keypair(c,p,c.nth_order(p))
 str = "apa sih ini"
 str = str.encode('utf-8')
 s = sign(str,c,p,c.nth_order(p),k)
+
+z =  hex(hash(str))
+
+print(z)
 
 #cek signature
 pri = readfile("eccprivate")
@@ -323,3 +324,4 @@ w = calculate_r_and_s(str,c,p,c.nth_order(p),d)
 signat = (Q,w[0],w[1])
 
 print(verify(str,c,p,c.nth_order(p),signat))
+"""

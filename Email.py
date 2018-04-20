@@ -1,4 +1,5 @@
 import smtplib
+from flask import render_template
 
 def Emailsender(to, subject, msg):
     try:
@@ -12,5 +13,5 @@ def Emailsender(to, subject, msg):
         mail.sendmail('kriptoecctest@gmail.com',to,sub)
         mail.quit()
         print("success")
-    except:
-        print("not success")
+    except Exception as e:
+        print("unsuccess" + e)
