@@ -36,12 +36,17 @@ def send():
         str = str.encode('utf-8')
         z = hex(hash(str))
         str = str.decode("utf-8")
-        str += '--------' + z
+        str += z
 
         for i in range(16):
             Fr.fn.assighnString(str, False)
             str = Fr.Encrypt()
-        print(str)
+
+        str = str.encode('utf-8')
+        w = hex(hash(str))
+        str = str.decode("utf-8")
+        str += w
+        str = str.encode('utf-8')
 
         try:
             Email.Emailsender(to,'Enkripsi',str)
