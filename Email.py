@@ -9,8 +9,8 @@ def Emailsender(to, subject, msg):
         mail.ehlo()
         mail.starttls()
         mail.login('kriptoecctest@gmail.com','kripto123kripto')
-        sub = "Subject: {}\n\n{}".format(subject, msg)
-        mail.sendmail('kriptoecctest@gmail.com',to,sub)
+        sub = "Subject: " + subject + "\n\n" + msg
+        mail.sendmail('kriptoecctest@gmail.com',to,sub.encode('utf-8'))
         mail.quit()
         print("success")
     except Exception as e:

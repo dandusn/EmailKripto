@@ -242,8 +242,19 @@ def calculate_r_and_s(message, curve, P, n, d):
     return (r, s)
 
 def parse_sign(Q, r, s):
-    p = repr(Q) + repr(r) + repr(s)
+    p = repr(Q) + '|' + repr(r) + '|' + repr(s)
     return p
+
+def parse_sign_from_email(msg):
+    a = msg.split('|')
+    q = a[1][a[1].find("(")+1:a[1].find(")")]
+    w = q.split(',')
+    x = int(w[0])
+    y = int(w[1])
+    Q = Point(x,y)
+    r = int(a[2])
+    s = int(a[3])
+    return(Q,r,s,a[0])
 
 #Verify the string message is authentic, given an ECDSA signature generated using a curve with
 #a distinguished point P that generates a prime order subgroup of size n.
@@ -300,7 +311,7 @@ def parse_privatekey(p):
         return int(float(p))
 
 
-
+"""
 c = CurveModP(1,0,3,7)
 print(c.show_points())
 
@@ -328,3 +339,4 @@ w = calculate_r_and_s(str,c,p,c.nth_order(p),d)
 signat = (Q,w[0],w[1])
 
 print(verify(str,c,p,c.nth_order(p),signat))
+"""

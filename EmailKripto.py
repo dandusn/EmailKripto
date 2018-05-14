@@ -1,3 +1,5 @@
+import codecs
+
 from flask import Flask, render_template, request
 import Email
 from Fierkes import Fierkes
@@ -33,25 +35,28 @@ def send():
         p = Ec.Point(3, 5)
         k = Ec.generate_keypair(d, p, d.nth_order(p))
         str = msg
-        str = str.encode('utf-8')
+        str = codecs.encode(str,'utf-8')
         u = Ec.sign(str,d,p,d.nth_order(p),k)
         z = Ec.parse_sign(u[0],u[1],u[2])
-        str = str.decode("utf-8")
+        str = codecs.decode(str,"utf-8")
+        str += "|"
         str += z
 
         for i in range(16):
             Fr.fn.assighnString(str, False)
             str = Fr.Encrypt()
 
-        str = str.encode('utf-8')
+        str = codecs.encode(str,'utf-8')
         v = Ec.sign(str,d,p,d.nth_order(p),k)
         w = Ec.parse_sign(v[0],v[1],v[2])
-        str = str.decode("utf-8")
+        str = codecs.decode(str,'utf-8')
+        str += "|"
         str += w
-        str = str.encode('utf-8')
+        #str = codecs.encode(str,'latin1')
 
         try:
             Email.Emailsender(to,'Enkripsi',str)
+            print(str)
             return render_template("result.html", emaile = to )
         except Exception as e:
             return render_template("index.html", error = e)

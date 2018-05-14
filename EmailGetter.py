@@ -1,3 +1,7 @@
+import codecs
+
+from Fierkes import Fierkes
+
 ORG_EMAIL = "@gmail.com"
 FROM_EMAIL = "ecckripto" + ORG_EMAIL
 FROM_PWD = "ecc123ecc"
@@ -8,6 +12,7 @@ import smtplib
 import time
 import imaplib
 import email
+import ecdsa
 
 def read_email_from_gmail():
     try:
@@ -24,12 +29,36 @@ def read_email_from_gmail():
 
         for response_part in data:
             if isinstance(response_part, tuple):
-                msg = email.message_from_string(response_part[1].decode('utf-8'))
+                msg = email.message_from_string(codecs.decode(response_part[1],'utf-8'))
                 email_subject = msg['subject']
                 email_body = get_mail_body(msg)
                 email_from = msg['from']
                 print('From : ' + email_from + '\n')
                 print('Body : ' + email_body + '\n')
+
+        a = email_body
+        Ec = ecdsa
+        s = Ec.parse_sign_from_email(a)
+
+        print(Ec.parse_sign(s[0], s[1], s[2]))
+
+        c = Ec.CurveModP(1, 0, 3, 7)
+        p = Ec.Point(3, 5)
+        signat = (s[0], s[1], s[2])
+        print(s[3])
+        print(Ec.verify(s[3].encode('latin1'), c, p, c.nth_order(p), signat))
+
+        Fr = Fierkes()
+
+        string = s[3]
+        for i in range(16):
+            Fr.fnd.assighnString(string, True)
+            string = Fr.Decrypt()
+
+        print(string)
+        f = Ec.parse_sign_from_email(string)
+
+        print(f[3])
 
     except Exception as e:
         print(str(e))
