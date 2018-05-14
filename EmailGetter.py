@@ -1,6 +1,6 @@
 ORG_EMAIL = "@gmail.com"
-FROM_EMAIL = "dandu.nuraga" + ORG_EMAIL
-FROM_PWD = "yesusluarbiasa"
+FROM_EMAIL = "ecckripto" + ORG_EMAIL
+FROM_PWD = "ecc123ecc"
 SMTP_SERVER = "imap.gmail.com"
 SMTP_PORT = 993
 
