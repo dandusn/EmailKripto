@@ -269,7 +269,7 @@ def verify(message, curve, P, n, signature):
 
 def writefile(fl, w):
     f = open(fl, "w")
-    f.write(str(w))
+    f.write(repr(w))
     f.close()
 
 def readfile(fl):

@@ -29,7 +29,7 @@ def send():
         Fr = Fierkes()
         Ec = ecdsa
         d = Ec.CurveModP(int(a), int(b), int(c), int(prime))
-        print(c.show_points())
+        print(d.show_points())
         p = Ec.Point(3, 5)
         k = Ec.generate_keypair(d, p, d.nth_order(p))
         str = msg
