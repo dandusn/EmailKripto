@@ -28,13 +28,14 @@ def send():
 
         Fr = Fierkes()
         Ec = ecdsa
-        c = Ec.CurveModP(int(a), int(b), int(c), int(prime))
+        d = Ec.CurveModP(int(a), int(b), int(c), int(prime))
         print(c.show_points())
         p = Ec.Point(3, 5)
-        k = Ec.generate_keypair(c, p, c.nth_order(p))
+        k = Ec.generate_keypair(d, p, d.nth_order(p))
         str = msg
         str = str.encode('utf-8')
-        z = Ec.parse_sign(Ec.sign(str,c,p,c.nth_order(p),k))
+        u = Ec.sign(str,d,p,d.nth_order(p),k)
+        z = Ec.parse_sign(u[0],u[1],u[2])
         str = str.decode("utf-8")
         str += z
 
@@ -43,7 +44,8 @@ def send():
             str = Fr.Encrypt()
 
         str = str.encode('utf-8')
-        w = Ec.parse_sign(Ec.sign(str,c,p,c.nth_order(p),k))
+        v = Ec.sign(str,d,p,d.nth_order(p),k)
+        w = Ec.parse_sign(v[0],v[1],v[2])
         str = str.decode("utf-8")
         str += w
         str = str.encode('utf-8')

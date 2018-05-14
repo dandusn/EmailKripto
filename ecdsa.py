@@ -242,7 +242,7 @@ def calculate_r_and_s(message, curve, P, n, d):
     return (r, s)
 
 def parse_sign(Q, r, s):
-    p = repr(Q) + str(r) + str(s)
+    p = repr(Q) + repr(r) + repr(s)
     return p
 
 #Verify the string message is authentic, given an ECDSA signature generated using a curve with
@@ -299,7 +299,7 @@ def parse_privatekey(p):
     except ValueError:
         return int(float(p))
 
-"""
+
 
 c = CurveModP(1,0,3,7)
 print(c.show_points())
@@ -312,9 +312,9 @@ str = "apa sih ini"
 str = str.encode('utf-8')
 s = sign(str,c,p,c.nth_order(p),k)
 
-z =  hex(hash(str))
+z = parse_sign(s[0],s[1],s[2])
 
-print(z)
+print(s)
 
 #cek signature
 pri = readfile("eccprivate")
@@ -328,4 +328,3 @@ w = calculate_r_and_s(str,c,p,c.nth_order(p),d)
 signat = (Q,w[0],w[1])
 
 print(verify(str,c,p,c.nth_order(p),signat))
-"""
