@@ -2,6 +2,7 @@ import codecs
 
 from flask import Flask, render_template, request
 import Email
+from Keccak_new import Keccak256
 from Fierkes import Fierkes
 from Fiestel import Fiestel
 
@@ -36,11 +37,17 @@ def send():
         k = Ec.generate_keypair(d, p, d.nth_order(p))
         str = msg
         str = codecs.encode(str,'utf-8')
+
         u = Ec.sign(str,d,p,d.nth_order(p),k)
         z = Ec.parse_sign(u[0],u[1],u[2])
+
+        #z = Keccak256(str).hexdigest().decode()
+        print(z)
         str = codecs.decode(str,"utf-8")
         str += "|"
         str += z
+
+        print(str)
 
         for i in range(16):
             Fr.fn.assighnString(str, False)

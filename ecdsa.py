@@ -1,5 +1,6 @@
 from random import SystemRandom
 from hashlib import sha256 #ganti dengan keccak
+from Keccak_new import *
 import math
 
 
@@ -197,7 +198,7 @@ class CurveModP(Curve):
 
 #Use sha256 to hash a message, and return the hash value as an integer. nanti ganti keccak
 def hash(message):
-    return int(sha256(message).hexdigest(), 16)
+    return int(Keccak256(message).hexdigest(), 16)
 
 #Hash the message and return integer whose binary representation is the the L leftmost bits
 #of the hash value, where L is the bit length of n.

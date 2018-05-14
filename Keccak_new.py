@@ -1,3 +1,5 @@
+import codecs
+import functools
 from math import log
 from operator import xor
 from copy import deepcopy
@@ -47,7 +49,7 @@ def multirate_padding(used_bytes, align_bytes):
     """
     The Keccak padding function.
     """
-    padlen = align_bytes - used_bytes
+    padlen = int(align_bytes) - int(used_bytes)
     if padlen == 0:
         padlen = align_bytes
     # note: padding done in 'internal bit ordering', wherein LSB is leftmost
@@ -68,7 +70,7 @@ def keccak_f(state):
         zero = state.zero
     
         # theta
-        C = [reduce(xor, A[x]) for x in rangeW]
+        C = [functools.reduce(xor, A[x]) for x in rangeW]
         D = [0] * W
         for x in rangeW:
             D[x] = C[(x - 1) % W] ^ rol(C[(x + 1) % W], 1, lanew)
@@ -92,7 +94,7 @@ def keccak_f(state):
     l = int(log(state.lanew, 2))
     nr = 12 + 2 * l
     
-    for ir in xrange(nr):
+    for ir in range(nr):
         round(state.s, RoundConstants[ir])
 
 class KeccakState(object):
@@ -123,7 +125,7 @@ class KeccakState(object):
         def fmt(x): return '%016x' % x
         for y in KeccakState.rangeH:
             row = []
-            for x in rangeW:
+            for x in KeccakState.rangeW:
                 row.append(fmt(st[x][y]))
             rows.append(' '.join(row))
         return '\n'.join(rows)
@@ -161,7 +163,7 @@ class KeccakState(object):
         """
         Converts a string to a sequence of byte values.
         """
-        return map(ord, ss)
+        return map(ord, str(ss))
 
     def __init__(self, bitrate, b):
         self.bitrate = bitrate
@@ -183,9 +185,9 @@ class KeccakState(object):
         """
         Mixes in the given bitrate-length string to the state.
         """
-        assert len(bb) == self.bitrate_bytes
+        assert len(bb) == int(self.bitrate_bytes)
         
-        bb += [0] * bits2bytes(self.b - self.bitrate)
+        bb += [0] * int(bits2bytes(self.b - self.bitrate))
         i = 0
         
         for y in self.rangeH:
@@ -197,13 +199,13 @@ class KeccakState(object):
         """
         Returns the bitrate-length prefix of the state to be output.
         """
-        return self.get_bytes()[:self.bitrate_bytes]
+        return self.get_bytes()[:int(self.bitrate_bytes)]
     
     def get_bytes(self):
         """
         Convert whole state to a byte string.
         """
-        out = [0] * bits2bytes(self.b)
+        out = [0] * int(bits2bytes(self.b))
         i = 0
         for y in self.rangeH:
             for x in self.rangeW:
@@ -234,7 +236,7 @@ class KeccakSponge(object):
         return deepcopy(self)
         
     def absorb_block(self, bb):
-        assert len(bb) == self.state.bitrate_bytes
+        assert len(bb) == int(self.state.bitrate_bytes)
         self.state.absorb(bb)
         self.permfn(self.state)
     
@@ -242,8 +244,8 @@ class KeccakSponge(object):
         self.buffer += KeccakState.str2bytes(s)
         
         while len(self.buffer) >= self.state.bitrate_bytes:
-            self.absorb_block(self.buffer[:self.state.bitrate_bytes])
-            self.buffer = self.buffer[self.state.bitrate_bytes:]
+            self.absorb_block(self.buffer[:int(self.state.bitrate_bytes)])
+            self.buffer = self.buffer[int(self.state.bitrate_bytes):]
     
     def absorb_final(self):
         padded = self.buffer + self.padfn(len(self.buffer), self.state.bitrate_bytes)
@@ -259,7 +261,7 @@ class KeccakSponge(object):
         Z = self.squeeze_once()
         while len(Z) < l:
             Z += self.squeeze_once()
-        return Z[:l]
+        return Z[:int(l)]
 
 class KeccakHash(object):
     """
@@ -296,7 +298,7 @@ class KeccakHash(object):
         return KeccakState.bytes2str(digest)
     
     def hexdigest(self):
-        return self.digest().encode('hex')
+        return codecs.encode(self.digest().encode('utf-8'),'hex_codec')
     
     @staticmethod
     def preset(bitrate_bits, capacity_bits, output_bits):

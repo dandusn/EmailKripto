@@ -46,7 +46,7 @@ def read_email_from_gmail():
         p = Ec.Point(3, 5)
         signat = (s[0], s[1], s[2])
         print(s[3])
-        print(Ec.verify(s[3].encode('latin1'), c, p, c.nth_order(p), signat))
+        print(Ec.verify(codecs.encode(s[3], 'utf-8'), c, p, c.nth_order(p), signat))
 
         Fr = Fierkes()
 
@@ -56,9 +56,8 @@ def read_email_from_gmail():
             string = Fr.Decrypt()
 
         print(string)
-        f = Ec.parse_sign_from_email(string)
-
-        print(f[3])
+        f = string.split('|')
+        print(f[0])
 
     except Exception as e:
         print(str(e))
