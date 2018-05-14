@@ -241,6 +241,10 @@ def calculate_r_and_s(message, curve, P, n, d):
         s = (invmod(k, n) * (z + r * d)) % n
     return (r, s)
 
+def parse_sign(Q, r, s):
+    p = repr(Q) + str(r) + str(s)
+    return p
+
 #Verify the string message is authentic, given an ECDSA signature generated using a curve with
 #a distinguished point P that generates a prime order subgroup of size n.
 def verify(message, curve, P, n, signature):

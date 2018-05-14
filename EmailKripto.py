@@ -34,7 +34,7 @@ def send():
         k = Ec.generate_keypair(c, p, c.nth_order(p))
         str = msg
         str = str.encode('utf-8')
-        z = hex(hash(str))
+        z = Ec.parse_sign(Ec.sign(str,c,p,c.nth_order(p),k))
         str = str.decode("utf-8")
         str += z
 
@@ -43,7 +43,7 @@ def send():
             str = Fr.Encrypt()
 
         str = str.encode('utf-8')
-        w = hex(hash(str))
+        w = Ec.parse_sign(Ec.sign(str,c,p,c.nth_order(p),k))
         str = str.decode("utf-8")
         str += w
         str = str.encode('utf-8')
