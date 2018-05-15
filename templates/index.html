@@ -30,22 +30,26 @@
                      <textarea class="form-control" name="toemail" type="email" value="{{ request.values.toemail }}" placeholder="Send to *" required data-validation-required-message="Please enter reciever email address."></textarea>
                     <p class="help-block text-danger"></p>
                  </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="en" name="wencrypt" value="encrypt">Enkrypt?</label>
+                    </div>
+                    <div class="form-group ">
+                        <label><input type="checkbox" id="sig" name="signature" value="signature">Signature?</label>
+                    </div>
+                    <div class="option">
                 <div class="form-group">
                     <textarea class="form-control" name="a"  value="{{ request.values.a }}" placeholder="a"></textarea>
-                    <p class="help-block text-danger"></p>
                   </div>
                   <div class="form-group">
                     <textarea class="form-control" name="b"  value="{{ request.values.b }}" placeholder="b"></textarea>
-                    <p class="help-block text-danger"></p>
                   </div>
                   <div class="form-group">
                     <textarea class="form-control" name="c" value="{{ request.values.c}}" placeholder="c"></textarea>
-                    <p class="help-block text-danger"></p>
                   </div>
                   <div class="form-group">
                     <textarea class="form-control" name="prime" value="{{ request.values.prime }}" placeholder="prime"></textarea>
-                    <p class="help-block text-danger"></p>
                   </div>
+                    </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
@@ -70,6 +74,16 @@
 
     <script src="../static/vendor/bootstrap/js/bootstrap.js"></script>
     <script src="../static/vendor/jquery/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".option").toggle();
+
+            $("#sig").click(function () {
+                $(".option").toggle();
+            })
+        })
+    </script>
 
 </body>
 
