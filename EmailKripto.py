@@ -40,7 +40,8 @@ def send():
             prime = request.form['prime']
             d = Ec.CurveModP(int(a), int(b), int(c), int(prime))
             print(d.show_points())
-            p = Ec.Point(3, 5)
+            t = input('titik ke: ')
+            p = d.get_points()[int(t)]
             k = Ec.generate_keypair(d, p, d.nth_order(p))
             str = codecs.encode(str,'utf-8')
             u = Ec.sign(str,d,p,d.nth_order(p),k)

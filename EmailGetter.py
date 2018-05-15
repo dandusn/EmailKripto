@@ -36,7 +36,7 @@ def read_email_from_gmail():
                 print('From : ' + email_from + '\n')
                 print('Body : ' + email_body + '\n')
 
-        a = email_body
+        ax = email_body
 
         print(email_subject)
         En = False
@@ -50,14 +50,21 @@ def read_email_from_gmail():
         elif email_subject == "En":
             En = True
 
-
         if Sig:
             #Signature
+            a = input('parameter kurva "a" = ')
+            b = input('parameter kurva "b" = ')
+            c = input('parameter kurva "c" = ')
+            p = input('parameter kurva "prima" = ')
+
+            x = input('parameter titik "x" = ')
+            y = input('parameter titik "y" = ')
+
             Ec = ecdsa
-            s = Ec.parse_sign_from_email(a)
+            s = Ec.parse_sign_from_email(ax)
             print(Ec.parse_sign(s[0], s[1], s[2]))
-            c = Ec.CurveModP(1, 0, 3, 7)
-            p = Ec.Point(3, 5)
+            c = Ec.CurveModP(int(a), int(b), int(c), int(p))
+            p = Ec.Point(int(x), int(y))
             signat = (s[0], s[1], s[2])
             print(s[3])
             print(Ec.verify(codecs.encode(s[3], 'utf-8'), c, p, c.nth_order(p), signat))
@@ -65,17 +72,17 @@ def read_email_from_gmail():
         if En:
             #Dekript
             Fr = Fierkes()
-            string = email_body
             if Sig:
-                string = s[3]
+                ax = s[3]
             for i in range(16):
-                Fr.fnd.assighnString(string, True)
-                string = Fr.Decrypt()
+                Fr.fnd.assighnString(ax, True)
+                ax = Fr.Decrypt()
 
 
-        print(string)
-        f = string.split('|')
-        print(f[0])
+        print(ax)
+        if Sig:
+            f = ax.split('|')
+            print(f[0])
 
     except Exception as e:
         print(str(e))
