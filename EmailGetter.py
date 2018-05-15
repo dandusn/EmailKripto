@@ -37,8 +37,6 @@ def read_email_from_gmail():
                 print('Body : ' + email_body + '\n')
 
         ax = email_body
-        print(ax)
-        print(len(ax))
 
         print(email_subject)
         En = False
