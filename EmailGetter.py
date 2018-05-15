@@ -37,6 +37,8 @@ def read_email_from_gmail():
                 print('Body : ' + email_body + '\n')
 
         ax = email_body
+        print(ax)
+        print(len(ax))
 
         print(email_subject)
         En = False
@@ -74,6 +76,8 @@ def read_email_from_gmail():
             Fr = Fierkes()
             if Sig:
                 ax = s[3]
+            else:
+                ax = ax[:-2]
             for i in range(16):
                 Fr.fnd.assighnString(ax, True)
                 ax = Fr.Decrypt()

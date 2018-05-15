@@ -30,3 +30,20 @@ class Fierkes:
         self.fnd.left = self.fnd.xOREncryptLeft(tempRight)
         self.fnd.right = tempLeft
         return self.fnd.left + self.fnd.right
+
+"""
+Fr = Fierkes()
+s = 'too much love will kill you!'
+for i in range(16):
+    Fr.fn.assighnString(s, False)
+    s = Fr.Encrypt()
+
+print(s)
+print(len(s))
+
+for i in range(16):
+    Fr.fnd.assighnString(s, True)
+    s = Fr.Decrypt()
+    print(s)
+"""
+
