@@ -80,7 +80,7 @@ def read_email_from_gmail():
 
 
         print(ax)
-        if Sig:
+        if Sig and En:
             f = ax.split('|')
             print(f[0])
 

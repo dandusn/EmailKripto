@@ -59,7 +59,7 @@ def send():
                 Fr.fn.assighnString(str, False)
                 str = Fr.Encrypt()
 
-        if Sig:
+        if Sig and En:
             str = codecs.encode(str,'utf-8')
             v = Ec.sign(str, d, p, d.nth_order(p), k)
             w = Ec.parse_sign(v[0], v[1], v[2])
